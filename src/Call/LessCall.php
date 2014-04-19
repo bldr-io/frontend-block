@@ -12,7 +12,7 @@
 namespace Bldr\Block\Frontend\Call;
 
 use Bldr\Call\AbstractCall;
-use lessc;
+use Less_Parser;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -23,7 +23,7 @@ use Symfony\Component\Finder\SplFileInfo;
 class LessCall extends AbstractCall
 {
     /**
-     * @var lessc $less
+     * @var Less_Parser $less
      */
     private $less;
 
@@ -42,7 +42,7 @@ class LessCall extends AbstractCall
      */
     public function run()
     {
-        $this->less = new lessc();
+        $this->less = new Less_Parser();
 
         $source = $this->getOption('src');
 
@@ -103,9 +103,9 @@ class LessCall extends AbstractCall
     {
         $content = '';
         foreach ($files as $file) {
-            $content = $file->getContents();
+            $this->less->parseFile($file);
         }
-        $output = $this->less->compile($content);
+        $output = $this->less->getCss();
 
         $fs = new Filesystem;
         $fs->mkdir(dirname($destination));
