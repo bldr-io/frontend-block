@@ -103,10 +103,17 @@ class LessCall extends AbstractCall
     {
         $content = '';
         foreach ($files as $file) {
+            if ($this->getOutput()->isVerbose()) {
+                $this->getOutput()->writeln("Compiling ".$file);
+            }
             $this->less->parseFile($file);
         }
+
         $output = $this->less->getCss();
 
+        if ($this->getOutput()->isVerbose()) {
+            $this->getOutput()->writeln("Writing to ".$destination);
+        }
         $fs = new Filesystem;
         $fs->mkdir(dirname($destination));
         $fs->dumpFile($destination, $output);
