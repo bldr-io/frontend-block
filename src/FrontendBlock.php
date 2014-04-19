@@ -24,6 +24,6 @@ class FrontendBlock extends AbstractBlock
      */
     protected function assemble(array $config, SymfonyContainerBuilder $container)
     {
-
+        $this->addCall('bldr_frontend.less', 'Bldr\Block\Frontend\Call\LessCall');
     }
 }
