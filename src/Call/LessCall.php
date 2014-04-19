@@ -12,6 +12,7 @@
 namespace Bldr\Block\Frontend\Call;
 
 use Bldr\Call\AbstractCall;
+use Bldr\Call\Traits\FinderAwareTrait;
 use Less_Parser;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -22,6 +23,8 @@ use Symfony\Component\Finder\SplFileInfo;
  */
 class LessCall extends AbstractCall
 {
+    use FinderAwareTrait;
+
     /**
      * @var Less_Parser $less
      */
@@ -35,6 +38,7 @@ class LessCall extends AbstractCall
         $this->setName('less')
             ->setDescription('Compiles the `src` less files')
             ->addOption('src', true, 'Source to watch')
+            ->addOption('dest', true, 'Destination to save to')
             ->addOption('compress', false, 'Should bldr remove whitespace and comments')
             ->addOption('sourceMap', false, 'Should bldr create a source map')
             ->addOption(
@@ -54,15 +58,9 @@ class LessCall extends AbstractCall
         $this->less = new Less_Parser($this->getLessOptions());
 
         $source = $this->getOption('src');
+        $files = $this->findFiles($source);
 
-        foreach ($source as $set) {
-            if (!array_key_exists('dest', $set)) {
-                throw new \Exception("`src` must have a `dest` option");
-            }
-
-            $files = $this->findFiles($set);
-            $this->compileFiles($files, $set['dest']);
-        }
+        $this->compileFiles($files, $this->getOption('dest'));
     }
 
     /**
@@ -92,45 +90,6 @@ class LessCall extends AbstractCall
     }
 
     /**
-     * @param array $set
-     *
-     * @return array|\Symfony\Component\Finder\SplFileInfo[]
-     * @throws \Exception
-     */
-    private function findFiles(array $set)
-    {
-        if (!array_key_exists('files', $set)) {
-            throw new \Exception("`src` must have a `files` option");
-        }
-
-        $fileSet = [];
-
-        if (!array_key_exists('path', $set)) {
-            $set['path'] = getcwd();
-        }
-
-        if (!array_key_exists('recursive', $set)) {
-            $set['recursive'] = false;
-        }
-
-        $paths = is_array($set['path']) ? $set['path'] : [$set['path']];
-        $files = is_array($set['files']) ? $set['files'] : [$set['files']];
-        foreach ($paths as $path) {
-            foreach ($files as $file) {
-                $finder = new Finder();
-                $finder->files()->in($path)->name($file);
-                if (!$set['recursive']) {
-                    $finder->depth('== 0');
-                }
-
-                $fileSet = $this->appendFileSet($finder, $fileSet);
-            }
-        }
-
-        return $fileSet;
-    }
-
-    /**
      * @param SplFileInfo[] $files
      * @param string        $destination
      */
@@ -152,21 +111,5 @@ class LessCall extends AbstractCall
         $fs = new Filesystem;
         $fs->mkdir(dirname($destination));
         $fs->dumpFile($destination, $output);
-    }
-
-    /**
-     * @param Finder $finder
-     * @param array  $fileSet
-     *
-     * @return SplFileInfo[]
-     */
-    protected function appendFileSet(Finder $finder, array $fileSet)
-    {
-        foreach ($finder as $file) {
-            /** @var SplFileInfo $file */
-            $fileSet[] = $file;
-        }
-
-        return $fileSet;
     }
 }
