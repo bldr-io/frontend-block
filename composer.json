@@ -1,0 +1,23 @@
+{
+    "name":              "bldr-io/frontend-block",
+    "description":       "Block for handling the Front End tasks (less/sass, css and js min, etc)",
+    "require":           {
+        "bldr-io/bldr":              "~4.0.0",
+        "leafo/lessphp":             "~0.4.0",
+        "dflydev/embedded-composer": "dev-master",
+        "composer/composer":         "dev-master"
+    },
+    "license":           "MIT",
+    "authors":           [
+        {
+            "name":  "Aaron Scherer",
+            "email": "aequasi@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload":          {
+        "psr-4": {
+            "Bldr\\Block\\Frontend\\": "src/"
+        }
+    }
+}
