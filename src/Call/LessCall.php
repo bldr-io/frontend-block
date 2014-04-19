@@ -106,7 +106,9 @@ class LessCall extends AbstractCall
         }
         $output = $this->less->compile($content);
 
-        (new Filesystem)->dumpFile($destination, $output);
+        $fs = new Filesystem;
+        $fs->mkdir(dirname($destination));
+        $fs->dumpFile($destination, $output);
     }
 
     /**
