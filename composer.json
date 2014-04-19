@@ -2,10 +2,12 @@
     "name":              "bldr-io/frontend-block",
     "description":       "Block for handling the Front End tasks (less/sass, css and js min, etc)",
     "require":           {
-        "bldr-io/bldr":              "~4.0.0",
         "leafo/lessphp":             "~0.4.0",
         "dflydev/embedded-composer": "dev-master",
         "composer/composer":         "dev-master"
+    },
+    "require-dev": {
+        "bldr-io/bldr":              "~4.0.0"
     },
     "license":           "MIT",
     "authors":           [
