@@ -34,7 +34,15 @@ class LessCall extends AbstractCall
     {
         $this->setName('less')
             ->setDescription('Compiles the `src` less files')
-            ->addOption('src', true, 'Source to watch');
+            ->addOption('src', true, 'Source to watch')
+            ->addOption('compress', false, 'Should bldr remove whitespace and comments')
+            ->addOption('sourceMap', false, 'Should bldr create a source map')
+            ->addOption(
+                'sourceMapWriteTo',
+                false,
+                'Where should bldr write to? If this isn\'t set, it will be written to the compiled file.'
+            )
+            ->addOption('sourceMapUrl', false, 'Url to use for the sourcemap');
     }
 
     /**
@@ -42,7 +50,8 @@ class LessCall extends AbstractCall
      */
     public function run()
     {
-        $this->less = new Less_Parser();
+
+        $this->less = new Less_Parser($this->getLessOptions());
 
         $source = $this->getOption('src');
 
@@ -54,6 +63,32 @@ class LessCall extends AbstractCall
             $files = $this->findFiles($set);
             $this->compileFiles($files, $set['dest']);
         }
+    }
+
+    /**
+     * @return array
+     * @throws \RuntimeException
+     */
+    private function getLessOptions()
+    {
+        $options = [];
+        if ($this->getOption('compress') === true) {
+            $options['compres'] = true;
+        }
+
+        if ($this->hasOption('sourceMap')) {
+            $options['sourceMap'] = $this->getOption('sourceMap');
+        }
+
+        if ($this->hasOption('sourceMapWriteTo')) {
+            $options['sourceMapWriteTo'] = $this->getOption('sourceMapWriteTo');
+        }
+
+        if ($this->hasOption('sourceMapUrl')) {
+            $options['sourceMapUrl'] = $this->getOption('sourceMapUrl');
+        }
+
+        return $options;
     }
 
     /**
