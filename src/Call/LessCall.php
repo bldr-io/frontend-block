@@ -58,7 +58,7 @@ class LessCall extends AbstractCall
         $this->less = new Less_Parser($this->getLessOptions());
 
         $source = $this->getOption('src');
-        $files = $this->findFiles($source);
+        $files = $this->getFiles($source);
 
         $this->compileFiles($files, $this->getOption('dest'));
     }
