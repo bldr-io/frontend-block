@@ -46,7 +46,7 @@ class LessCall extends AbstractCall
                 false,
                 'Where should bldr write to? If this isn\'t set, it will be written to the compiled file.'
             )
-            ->addOption('sourceMapUrl', false, 'Url to use for the sourcemap');
+            ->addOption('sourceMapURL', false, 'Url to use for the source map');
     }
 
     /**
@@ -82,8 +82,8 @@ class LessCall extends AbstractCall
             $options['sourceMapWriteTo'] = $this->getOption('sourceMapWriteTo');
         }
 
-        if ($this->hasOption('sourceMapUrl')) {
-            $options['sourceMapUrl'] = $this->getOption('sourceMapUrl');
+        if ($this->hasOption('sourceMapURL')) {
+            $options['sourceMapURL'] = $this->getOption('sourceMapURL');
         }
 
         return $options;
