@@ -20,7 +20,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * @author Aaron Scherer <aequasi@gmail.com>
  */
-class Css extends AbstractCall
+class CssCall extends AbstractCall
 {
     use FinderAwareTrait;
 
