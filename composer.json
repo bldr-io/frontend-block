@@ -2,8 +2,9 @@
     "name":              "bldr-io/frontend-block",
     "description":       "Block for handling the Front End tasks (less/sass, css and js min, etc)",
     "require":           {
-        "oyejorge/less.php": "~1.7.0",
-        "leafo/scssphp": "~0.0.10"
+        "oyejorge/less.php":     "~1.7.0",
+        "leafo/scssphp":         "~0.0.10",
+        "matthiasmullie/minify": "~1.2.0"
     },
     "require-dev":       {
         "bldr-io/bldr":              "~4.0.0",
