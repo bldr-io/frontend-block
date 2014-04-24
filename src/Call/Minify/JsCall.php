@@ -41,7 +41,7 @@ class JsCall extends AbstractCall
 
         $code = '';
         foreach ($files as $file) {
-            $code .= $file->getContents();
+            $code .= rtrim($file->getContents());
             if (substr($code, -1) !== ';') {
                 $code .= ';';
             }
