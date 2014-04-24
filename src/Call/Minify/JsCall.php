@@ -42,6 +42,9 @@ class JsCall extends AbstractCall
         $code = '';
         foreach ($files as $file) {
             $code .= $file->getContents();
+            if (substr($code, -1) !== ';') {
+                $code .= ';';
+            }
         }
 
         if ($this->getOutput()->isVerbose()) {
