@@ -37,7 +37,7 @@ class LessCall extends AbstractCall
     {
         $this->setName('less')
             ->setDescription('Compiles the `src` less files')
-            ->addOption('src', true, 'Source to watch')
+            ->addOption('src', true, 'Less files to compile')
             ->addOption('dest', true, 'Destination to save to')
             ->addOption('compress', false, 'Should bldr remove whitespace and comments')
             ->addOption('sourceMap', false, 'Should bldr create a source map')

@@ -25,6 +25,7 @@ class FrontendBlock extends AbstractBlock
     protected function assemble(array $config, SymfonyContainerBuilder $container)
     {
         $this->addCall('bldr_frontend.less', 'Bldr\Block\Frontend\Call\LessCall');
+        $this->addCall('bldr_frontend.coffee', 'Bldr\Block\Frontend\Call\CoffeeCall');
         $this->addCall('bldr_frontend.concat', 'Bldr\Block\Frontend\Call\ConcatCall');
         $this->addCall('bldr_frontend.minify.css', 'Bldr\Block\Frontend\Call\Minify\CssCall');
         $this->addCall('bldr_frontend.minify.js', 'Bldr\Block\Frontend\Call\Minify\JsCall');
