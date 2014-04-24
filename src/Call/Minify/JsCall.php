@@ -13,7 +13,7 @@ namespace Bldr\Block\Frontend\Call\Minify;
 
 use Bldr\Call\AbstractCall;
 use Bldr\Call\Traits\FinderAwareTrait;
-use MatthiasMullie\Minify\JS;
+use JShrink\Minifier;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -39,16 +39,17 @@ class JsCall extends AbstractCall
         /** @var SplFileInfo[] $files */
         $files = $this->getFiles($this->getOption('src'));
 
-        $minifier = new JS();
+        $code = '';
         foreach ($files as $file) {
-            $minifier->add($file);
+            $code .= $file->getContents();
         }
 
         if ($this->getOutput()->isVerbose()) {
             $this->getOutput()->writeln("Writing to ".$destination);
         }
-        (new Filesystem)->mkdir(dirname($destination));
 
-        $minifier->minify($destination);
+        $fs = new Filesystem();
+        $fs->mkdir(dirnam($destination));
+        $fs->dumpFile($destination, Minifier::minify($code));
     }
 }
