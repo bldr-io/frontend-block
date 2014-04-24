@@ -41,7 +41,7 @@ class ConcatCall extends AbstractCall
      */
     public function run()
     {
-        $destination = $this->getOption('destination');
+        $destination = $this->getOption('dest');
         $files = $this->getFiles($this->getOption('src'));
 
         $content = '';
