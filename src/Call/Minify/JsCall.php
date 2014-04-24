@@ -53,6 +53,6 @@ class JsCall extends AbstractCall
 
         $fs = new Filesystem();
         $fs->mkdir(dirname($destination));
-        $fs->dumpFile($destination, Minifier::minify($code));
+        $fs->dumpFile($destination, Minifier::minify($code, ['flaggedComments' => false]));
     }
 }
