@@ -27,6 +27,7 @@ class CssCall extends AbstractCall
     public function configure()
     {
         $this->setName('minify:css')
+            ->setDescription('Minified the src files into the dest')
             ->addOption('src', true, 'Files to Minify')
             ->addOption('dest', true, 'Destination to save minified css');
     }
