@@ -49,7 +49,7 @@ class JsCall extends AbstractCall
         }
 
         $fs = new Filesystem();
-        $fs->mkdir(dirnam($destination));
+        $fs->mkdir(dirname($destination));
         $fs->dumpFile($destination, Minifier::minify($code));
     }
 }
