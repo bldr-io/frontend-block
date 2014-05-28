@@ -66,7 +66,7 @@ class CoffeeCall extends AbstractCall
                 $this->getOutput()->writeln("Compiling ".$file);
             }
 
-            $code .= $file->getContents();
+            $code .= $file->getContents() . "\n";
         }
 
         $output = $this->coffee->compile($code);
