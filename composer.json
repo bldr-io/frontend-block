@@ -21,6 +21,9 @@
         }
     ],
     "minimum-stability": "dev",
+    "extra": {
+      "block-class": "Bldr\\Block\\Frontend\\FrontendBlock"
+    },
     "autoload":          {
         "psr-4": {
             "Bldr\\Block\\Frontend\\": "src/"
