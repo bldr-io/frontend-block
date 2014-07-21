@@ -75,13 +75,15 @@ class SassCall extends AbstractCall
      */
     private function compileFiles(array $files, $destination)
     {
-        if ($this->getOutput()->isVerbose()) {
-            foreach ($files as $file) {
+        $fileSet = [];
+        foreach ($files as $file) {
+            if ($this->getOutput()->isVerbose()) {
                 $this->getOutput()->writeln("Compiling ".$file);
             }
+            $fileSet[] = (string) $file;
         }
 
-        $output = $this->sass->toCss($files);
+        $output = $this->sass->toCss($fileSet);
 
         if ($this->getOutput()->isVerbose()) {
             $this->getOutput()->writeln("Writing to ".$destination);
