@@ -13,7 +13,7 @@ namespace Bldr\Block\Frontend\Call;
 
 use Bldr\Call\AbstractCall;
 use Bldr\Call\Traits\FinderAwareTrait;
-use Less_Parser;
+use SassParser;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -21,32 +21,25 @@ use Symfony\Component\Finder\SplFileInfo;
 /**
  * @author Aaron Scherer <aequasi@gmail.com>
  */
-class LessCall extends AbstractCall
+class SassCall extends AbstractCall
 {
     use FinderAwareTrait;
 
     /**
-     * @var Less_Parser $less
+     * @var SassParser $sass
      */
-    private $less;
+    private $sass;
 
     /**
      * {@inheritDoc}
      */
     public function configure()
     {
-        $this->setName('less')
-            ->setDescription('Compiles the `src` less files')
-            ->addOption('src', true, 'Less files to compile')
+        $this->setName('sass')
+            ->setDescription('Compiles the `src` sass/scss files')
+            ->addOption('src', true, 'Sass/Scss files to compile')
             ->addOption('dest', true, 'Destination to save to')
-            ->addOption('compress', false, 'Should bldr remove whitespace and comments')
-            ->addOption('sourceMap', false, 'Should bldr create a source map')
-            ->addOption(
-                'sourceMapWriteTo',
-                false,
-                'Where should bldr write to? If this isn\'t set, it will be written to the compiled file.'
-            )
-            ->addOption('sourceMapURL', false, 'Url to use for the source map');
+            ->addOption('compress', false, 'Should bldr remove whitespace and comments');
     }
 
     /**
@@ -54,11 +47,10 @@ class LessCall extends AbstractCall
      */
     public function run()
     {
-
-        $this->less = new Less_Parser($this->getLessOptions());
+        $this->sass = new SassParser($this->getSassOptions());
 
         $source = $this->getOption('src');
-        $files = $this->getFiles($source);
+        $files  = $this->getFiles($source);
 
         $this->compileFiles($files, $this->getOption('dest'));
     }
@@ -67,23 +59,11 @@ class LessCall extends AbstractCall
      * @return array
      * @throws \RuntimeException
      */
-    private function getLessOptions()
+    private function getSassOptions()
     {
         $options = [];
         if ($this->getOption('compress') === true) {
-            $options['compres'] = true;
-        }
-
-        if ($this->hasOption('sourceMap')) {
-            $options['sourceMap'] = $this->getOption('sourceMap');
-        }
-
-        if ($this->hasOption('sourceMapWriteTo')) {
-            $options['sourceMapWriteTo'] = $this->getOption('sourceMapWriteTo');
-        }
-
-        if ($this->hasOption('sourceMapURL')) {
-            $options['sourceMapURL'] = $this->getOption('sourceMapURL');
+            $options['style'] = \SassRenderer::STYLE_COMPRESSED;
         }
 
         return $options;
@@ -95,18 +75,20 @@ class LessCall extends AbstractCall
      */
     private function compileFiles(array $files, $destination)
     {
+        $fileSet = [];
         foreach ($files as $file) {
             if ($this->getOutput()->isVerbose()) {
                 $this->getOutput()->writeln("Compiling ".$file);
             }
-            $this->less->parseFile($file);
+            $fileSet[] = (string) $file;
         }
 
-        $output = $this->less->getCss();
+        $output = $this->sass->toCss($fileSet);
 
         if ($this->getOutput()->isVerbose()) {
             $this->getOutput()->writeln("Writing to ".$destination);
         }
+
         $fs = new Filesystem;
         $fs->mkdir(dirname($destination));
         $fs->dumpFile($destination, $output);
