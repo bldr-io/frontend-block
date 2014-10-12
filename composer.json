@@ -9,7 +9,7 @@
         "coffeescript/coffeescript": "~1.3.1"
     },
     "require-dev":       {
-        "bldr-io/bldr":              "~6.2@stable",
+        "bldr-io/bldr":              "~7.0@stable",
         "dflydev/embedded-composer": "dev-master",
         "composer/composer":         "dev-master"
     },

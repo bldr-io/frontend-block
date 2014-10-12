@@ -9,19 +9,19 @@
  * with this source code in the file LICENSE
  */
 
-namespace Bldr\Block\Frontend\Call;
+namespace Bldr\Block\Frontend\Task;
 
-use Bldr\Call\AbstractCall;
-use Bldr\Call\Traits\FinderAwareTrait;
+use Bldr\Block\Core\Task\AbstractTask;
+use Bldr\Block\Core\Task\Traits\FinderAwareTrait;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use CoffeeScript\Compiler;
 
 /**
  * @author Aaron Scherer <aequasi@gmail.com>
  */
-class CoffeeCall extends AbstractCall
+class CoffeeTask extends AbstractTask
 {
     use FinderAwareTrait;
 
@@ -37,33 +37,34 @@ class CoffeeCall extends AbstractCall
     {
         $this->setName('coffee')
             ->setDescription('Compiles the `src` coffee files')
-            ->addOption('src', true, 'Coffeescript files to compile')
-            ->addOption('dest', true, 'Destination to save to');
+            ->addParameter('src', true, 'Coffeescript files to compile')
+            ->addParameter('dest', true, 'Destination to save to');
     }
 
     /**
      * {@inheritDoc}
      */
-    public function run()
+    public function run(OutputInterface $output)
     {
         $this->coffee = new Compiler();
 
-        $source = $this->getOption('src');
+        $source = $this->getParameter('src');
         $files = $this->getFiles($source);
 
-        $this->compileFiles($files, $this->getOption('dest'));
+        $this->compileFiles($output, $files, $this->getParameter('dest'));
     }
 
     /**
-     * @param SplFileInfo[] $files
-     * @param string        $destination
+     * @param OutputInterface $output
+     * @param SplFileInfo[]   $files
+     * @param string          $destination
      */
-    private function compileFiles(array $files, $destination)
+    private function compileFiles(OutputInterface $output, array $files, $destination)
     {
         $code = '';
         foreach ($files as $file) {
-            if ($this->getOutput()->isVerbose()) {
-                $this->getOutput()->writeln("Compiling ".$file);
+            if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
+                $output->writeln("Compiling ".$file);
             }
 
             $code .= $file->getContents() . "\n";
@@ -71,8 +72,8 @@ class CoffeeCall extends AbstractCall
 
         $output = $this->coffee->compile($code);
 
-        if ($this->getOutput()->isVerbose()) {
-            $this->getOutput()->writeln("Writing to ".$destination);
+        if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
+            $output->writeln("Writing to ".$destination);
         }
 
         $fs = new Filesystem;

@@ -9,19 +9,19 @@
  * with this source code in the file LICENSE
  */
 
-namespace Bldr\Block\Frontend\Call;
+namespace Bldr\Block\Frontend\Task;
 
-use Bldr\Call\AbstractCall;
-use Bldr\Call\Traits\FinderAwareTrait;
+use Bldr\Block\Core\Task\AbstractTask;
+use Bldr\Block\Core\Task\Traits\FinderAwareTrait;
 use SassParser;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * @author Aaron Scherer <aequasi@gmail.com>
  */
-class SassCall extends AbstractCall
+class SassTask extends AbstractTask
 {
     use FinderAwareTrait;
 
@@ -37,22 +37,22 @@ class SassCall extends AbstractCall
     {
         $this->setName('sass')
             ->setDescription('Compiles the `src` sass/scss files')
-            ->addOption('src', true, 'Sass/Scss files to compile')
-            ->addOption('dest', true, 'Destination to save to')
-            ->addOption('compress', false, 'Should bldr remove whitespace and comments');
+            ->addParameter('src', true, 'Sass/Scss files to compile')
+            ->addParameter('dest', true, 'Destination to save to')
+            ->addParameter('compress', false, 'Should bldr remove whitespace and comments');
     }
 
     /**
      * {@inheritDoc}
      */
-    public function run()
+    public function run(OutputInterface $output)
     {
         $this->sass = new SassParser($this->getSassOptions());
 
-        $source = $this->getOption('src');
+        $source = $this->getParameter('src');
         $files  = $this->getFiles($source);
 
-        $this->compileFiles($files, $this->getOption('dest'));
+        $this->compileFiles($output, $files, $this->getParameter('dest'));
     }
 
     /**
@@ -62,7 +62,7 @@ class SassCall extends AbstractCall
     private function getSassOptions()
     {
         $options = [];
-        if ($this->getOption('compress') === true) {
+        if ($this->getParameter('compress') === true) {
             $options['style'] = \SassRenderer::STYLE_COMPRESSED;
         }
 
@@ -70,23 +70,24 @@ class SassCall extends AbstractCall
     }
 
     /**
-     * @param SplFileInfo[] $files
-     * @param string        $destination
+     * @param OutputInterface $output
+     * @param SplFileInfo[]   $files
+     * @param string          $destination
      */
-    private function compileFiles(array $files, $destination)
+    private function compileFiles(OutputInterface $output, array $files, $destination)
     {
         $fileSet = [];
         foreach ($files as $file) {
-            if ($this->getOutput()->isVerbose()) {
-                $this->getOutput()->writeln("Compiling ".$file);
+            if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
+                $output->writeln("Compiling ".$file);
             }
             $fileSet[] = (string) $file;
         }
 
         $output = $this->sass->toCss($fileSet);
 
-        if ($this->getOutput()->isVerbose()) {
-            $this->getOutput()->writeln("Writing to ".$destination);
+        if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
+            $output->writeln("Writing to ".$destination);
         }
 
         $fs = new Filesystem;

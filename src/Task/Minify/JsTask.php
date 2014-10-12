@@ -9,18 +9,19 @@
  * with this source code in the file LICENSE
  */
 
-namespace Bldr\Block\Frontend\Call\Minify;
+namespace Bldr\Block\Frontend\Task\Minify;
 
-use Bldr\Call\AbstractCall;
-use Bldr\Call\Traits\FinderAwareTrait;
+use Bldr\Block\Core\Task\AbstractTask;
+use Bldr\Block\Core\Task\Traits\FinderAwareTrait;
 use JShrink\Minifier;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @author Aaron Scherer <aequasi@gmail.com>
  */
-class JsCall extends AbstractCall
+class JsTask extends AbstractTask
 {
     use FinderAwareTrait;
 
@@ -28,16 +29,19 @@ class JsCall extends AbstractCall
     {
         $this->setName('minify:js')
             ->setDescription('Minified the src files into the dest')
-            ->addOption('src', true, 'Files to Minify')
-            ->addOption('dest', true, 'Destination to save minified js');
+            ->addParameter('src', true, 'Files to Minify')
+            ->addParameter('dest', true, 'Destination to save minified js');
     }
 
-    public function run()
+    /**
+     * {@inheritdoc}
+     */
+    public function run(OutputInterface $output)
     {
-        $destination = $this->getOption('dest');
+        $destination = $this->getParameter('dest');
 
         /** @var SplFileInfo[] $files */
-        $files = $this->getFiles($this->getOption('src'));
+        $files = $this->getFiles($this->getParameter('src'));
 
         $code = '';
         foreach ($files as $file) {
@@ -47,8 +51,8 @@ class JsCall extends AbstractCall
             }
         }
 
-        if ($this->getOutput()->isVerbose()) {
-            $this->getOutput()->writeln("Writing to ".$destination);
+        if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
+            $output->writeln("Writing to ".$destination);
         }
 
         $fs = new Filesystem();
