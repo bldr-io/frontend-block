@@ -52,7 +52,7 @@ class LessTask extends AbstractTask
     /**
      * {@inheritDoc}
      */
-    public function run()
+    public function run(OutputInterface $output)
     {
 
         $this->less = new Less_Parser($this->getLessOptions());
