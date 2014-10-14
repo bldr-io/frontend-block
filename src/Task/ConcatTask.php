@@ -34,7 +34,7 @@ class ConcatTask extends AbstractTask
             ->addParameter('src', true, 'The file(s) to concatenate')
             ->addParameter('dest', true, 'The filename and path to save the concatenated file')
             ->addParameter('banner', false, 'Banner to place at the top of the concatenated file')
-            ->addParameter('separator', true, 'The separator to use between files', "\n");
+            ->addParameter('separator', false, 'The separator to use between files', "\n");
     }
 
     /**
