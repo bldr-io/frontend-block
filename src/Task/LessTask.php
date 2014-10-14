@@ -103,13 +103,14 @@ class LessTask extends AbstractTask
             $this->less->parseFile($file);
         }
 
-        $output = $this->less->getCss();
+        $css = $this->less->getCss();
 
         if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
             $output->writeln("Writing to ".$destination);
         }
+
         $fs = new Filesystem;
         $fs->mkdir(dirname($destination));
-        $fs->dumpFile($destination, $output);
+        $fs->dumpFile($destination, $css);
     }
 }

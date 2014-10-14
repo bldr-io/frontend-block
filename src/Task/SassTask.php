@@ -84,7 +84,7 @@ class SassTask extends AbstractTask
             $fileSet[] = (string) $file;
         }
 
-        $output = $this->sass->toCss($fileSet);
+        $css = $this->sass->toCss($fileSet);
 
         if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
             $output->writeln("Writing to ".$destination);
@@ -92,6 +92,6 @@ class SassTask extends AbstractTask
 
         $fs = new Filesystem;
         $fs->mkdir(dirname($destination));
-        $fs->dumpFile($destination, $output);
+        $fs->dumpFile($destination, $css);
     }
 }

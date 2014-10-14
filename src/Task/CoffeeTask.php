@@ -51,6 +51,7 @@ class CoffeeTask extends AbstractTask
         $source = $this->getParameter('src');
         $files = $this->getFiles($source);
 
+
         $this->compileFiles($output, $files, $this->getParameter('dest'));
     }
 
@@ -70,7 +71,7 @@ class CoffeeTask extends AbstractTask
             $code .= $file->getContents() . "\n";
         }
 
-        $output = $this->coffee->compile($code);
+        $js = $this->coffee->compile($code);
 
         if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
             $output->writeln("Writing to ".$destination);
@@ -78,6 +79,6 @@ class CoffeeTask extends AbstractTask
 
         $fs = new Filesystem;
         $fs->mkdir(dirname($destination));
-        $fs->dumpFile($destination, $output);
+        $fs->dumpFile($destination, $js);
     }
 }
