@@ -10,8 +10,8 @@
     },
     "require-dev":       {
         "bldr-io/bldr":              "~7.0",
-        "dflydev/embedded-composer": "dev-master",
-        "composer/composer":         "dev-master"
+        "dflydev/embedded-composer": "@dev",
+        "composer/composer":         "@dev"
     },
     "license":           "MIT",
     "authors":           [
