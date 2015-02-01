@@ -71,7 +71,7 @@ class CoffeeTask extends AbstractTask
             $code .= $file->getContents() . "\n";
         }
 
-        $js = $this->coffee->compile($code);
+        $js = $this->coffee->compile($code, ['header' => false, 'bare' => true]);
 
         if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
             $output->writeln("Writing to ".$destination);
