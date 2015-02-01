@@ -38,7 +38,8 @@ class CoffeeTask extends AbstractTask
         $this->setName('coffee')
             ->setDescription('Compiles the `src` coffee files')
             ->addParameter('src', true, 'Coffeescript files to compile')
-            ->addParameter('dest', true, 'Destination to save to');
+            ->addParameter('dest', true, 'Destination to save to')
+            ->addParameter('options', false, 'Options for the compiler', ['header' => false, 'bare' => true]);
     }
 
     /**
@@ -71,7 +72,7 @@ class CoffeeTask extends AbstractTask
             $code .= $file->getContents() . "\n";
         }
 
-        $js = $this->coffee->compile($code, ['header' => false, 'bare' => true]);
+        $js = $this->coffee->compile($code, $this->getParameter('options'));
 
         if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERBOSE) {
             $output->writeln("Writing to ".$destination);
